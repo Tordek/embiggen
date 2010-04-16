@@ -41,7 +41,7 @@ Examples
 
     <div id="header"></div>
 
-``div.align-left#header`` expands to::
+``div#header.align-left`` expands to::
 
     <div id="header" class="align-left"></div>
 
