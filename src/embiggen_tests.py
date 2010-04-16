@@ -13,6 +13,8 @@ def test_embiggen():
                       'embiggened': '<br class="class1 class2" id="id"/>'
                   }, {'short': 'br.class1.class2',
                       'embiggened': '<br class="class1 class2"/>'
+                  }, {'short': 'div',
+                      'embiggened': '<div></div>'
                   }]
 
     for test_case in test_cases:

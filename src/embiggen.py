@@ -12,7 +12,6 @@ TODO: Placeholders.
 TODO: Command line options.
 TODO: Shortcuts.
 TODO: Default properties.
-TODO: Default block elements.
 """
 
 import re
@@ -34,6 +33,9 @@ def build(element_unparsed):
     Some elements have inherent Properties (like `src` and `alt` for `img`).
     Others are inherently block elements (like `div`).
     """
+
+    short_tags = ['area', 'base', 'basefont', 'br', 'embed', 'hr','input',
+                  'img', 'link', 'param', 'meta']
 
     result = re.match(r'(\w+)'                        # Name
                       r'\s*(?:#(\w+))?'               # ID
@@ -65,9 +67,12 @@ def build(element_unparsed):
 
             element.setAttribute(prop_name.strip(), prop_value.strip())
 
+    if content is None and name not in short_tags:
+        content = ''
+
     if content is not None:
         text = Text()
-        text.replaceWholeText(content)
+        text.data = content.strip()
         element.appendChild(text)
 
     return element
