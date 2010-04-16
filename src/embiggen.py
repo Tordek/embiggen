@@ -36,7 +36,7 @@ def build(element_unparsed):
     """
 
     result = re.match(r'(\w+)'                        # Name
-                      r'\s*(?:#(\w+))?'                      # ID
+                      r'\s*(?:#(\w+))?'               # ID
                       r'((?:\.\w+)*)'                 # Classes
                       r'((?:\s*\[[^\]]+\])*)'         # Properties
                       r'(?:\s*\{(\s*[^\}]+)\s*\})?',  # Content
