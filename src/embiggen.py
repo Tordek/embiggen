@@ -34,7 +34,7 @@ def build(element_unparsed):
     Others are inherently block elements (like `div`).
     """
 
-    short_tags = ['area', 'base', 'basefont', 'br', 'embed', 'hr','input',
+    short_tags = ['area', 'base', 'basefont', 'br', 'embed', 'hr', 'input',
                   'img', 'link', 'param', 'meta']
 
     result = re.match(r'(\w+)'                        # Name
