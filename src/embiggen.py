@@ -133,6 +133,10 @@ def parse(line):
     while True:
         element, separator, rest = parse_element(rest)
 
+        if isinstance(current_element.lastChild, Text) and \
+           current_element.lastChild.data == '':
+            current_element.removeChild(current_element.lastChild)
+
         current_element.appendChild(element)
 
         if rest is None:
@@ -147,28 +151,64 @@ def parse(line):
 
     return root
 
-def decode(tree):
+def pretty_print(node, indent, addindent, newline):
+    if isinstance(node, Text):
+        return indent + node.data + newline
+
+    block_nodes = ['address', 'blockquote', 'div', 'dl', 'ul', 'ol',
+                   'fieldset', 'form', 'tr', 'table', 'tbody', 'thead',
+                   'tfoot', 'noframes', 'frameset']
+
+    value = indent + '<' + node.tagName
+
+    for attribute_name, attribute_value in sorted(node.attributes.items()):
+        value += ' %s="%s"'%(attribute_name, attribute_value)
+
+    # It's incredible I need the second test.
+    if node.hasChildNodes and len(node.childNodes) > 0:
+        value += '>'
+
+        if node.tagName not in block_nodes and len(node.childNodes) == 1:
+            value += pretty_print(node.childNodes[0], '', '', '')
+        else:
+            value += newline
+
+            for child in node.childNodes:
+                value += pretty_print(child, indent + addindent, addindent,
+                                      newline)
+                if value[-1] != newline:
+                    value += newline
+
+            value += indent
+
+        value += '</' + node.tagName + '>'
+    else:
+        value += '/>'
+
+    return value
+
+def decode(tree, indent, newline):
     """Takes a parsed tree and generates the HTML.
     """
 
     result = ''
 
     for subtree in tree.childNodes:
-        result += subtree.toprettyxml()
+        result += pretty_print(subtree, '', indent, newline) + newline
 
     return result
 
-def embiggen(line):
+def embiggen(line, indent, newline):
     """Takes a line, parses it, and returns the generated HTML as a string.
     """
 
-    return decode(parse(line))
+    return decode(parse(line), indent, newline)
 
 def main():
     """Reads from `stdin` and generates the embiggened HTML for each line.
     """
     for line in sys.stdin:
-        print embiggen(line)
+        print embiggen(line, '\t', '\n')
 
 if __name__ == "__main__":
     main()
