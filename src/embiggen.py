@@ -126,7 +126,7 @@ def decode(tree):
     result = ''
 
     for subtree in tree.childNodes:
-        result += subtree.toxml()
+        result += subtree.toprettyxml()
 
     return result
 
