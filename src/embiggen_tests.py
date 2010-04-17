@@ -15,6 +15,8 @@ def test_embiggen():
                       'embiggened': '<br class="class1 class2"/>\n'
                   }, {'short': 'div',
                       'embiggened': '<div>\n\t\n</div>\n'
+                  }, {'short': 'a',
+                      'embiggened': '<a href="">\n\t\n</a>\n'
                   }, {'short': 'a[href=http://tordek.com.ar]',
                       'embiggened': '<a href="http://tordek.com.ar">\n\t\n</a>\n'
                   }, {'short': 'a[href=http://tordek.com.ar]{ My Homepage }',

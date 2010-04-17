@@ -11,7 +11,6 @@ TODO: Multipliers.
 TODO: Placeholders.
 TODO: Command line options.
 TODO: Shortcuts.
-TODO: Default properties.
 """
 
 import re
@@ -37,6 +36,31 @@ def build(element_unparsed):
     short_tags = ['area', 'base', 'basefont', 'br', 'embed', 'hr', 'input',
                   'img', 'link', 'param', 'meta']
 
+    required = {
+        'a': {'href': ''},
+        'base': {'href': ''},
+        'abbr': {'title': ''},
+        'acronym':{'title': ''},
+        'bdo': {'dir': ''},
+        'link': {'rel': 'stylesheet', 'href': ''},
+        'style': {'type': 'text/css'},
+        'script': {'type': 'text/javascript'},
+        'img': {'src':'', 'alt':''},
+        'iframe': {'src': '', 'frameborder': '0'},
+        'embed': {'src': '', 'type': ''},
+        'object': {'data': '', 'type': ''},
+        'param': {'name': '', 'value': ''},
+        'form': {'action': '', 'method': 'post'},
+        'table': {'cellspacing': '0'},
+        'input': {'type': '', 'name': '', 'value': ''},
+        'base': {'href': ''},
+        'area': {'shape': '', 'coords': '', 'href': '', 'alt': ''},
+        'select': {'name': ''},
+        'option': {'value': ''},
+        'textarea':{'name': ''},
+        'meta': {'content': ''},
+    }
+
     result = re.match(r'(\w+)'                        # Name
                       r'\s*(?:#(\w+))?'               # ID
                       r'((?:\.\w+)*)'                 # Classes
@@ -53,6 +77,10 @@ def build(element_unparsed):
 
     if classes is not None and classes != '':
         element.setAttribute("class", classes.replace('.', ' ').strip())
+
+    if required.has_key(name):
+        for property_name, property_value in required[name].iteritems():
+            element.setAttribute(property_name, property_value)
 
     if properties is not None:
         props = re.split(r'[\[\],]\s*', properties)
