@@ -152,6 +152,12 @@ def parse(line):
     return root
 
 def pretty_print(node, indent, addindent, newline):
+    """Pretty-print an XML-tree.
+
+    This pretty-printing function values human-readability more than pedantic
+    HTML correctness. Many block nodes (like `p`) aren't rendered like others
+    (with a newline after the opening tag, and indented contents).
+    """
     if isinstance(node, Text):
         return indent + node.data + newline
 
