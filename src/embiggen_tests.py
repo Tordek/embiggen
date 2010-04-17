@@ -27,6 +27,8 @@ def test_embiggen():
                       'embiggened': '<a href="http://tordek.com.ar">My Homepage</a>\n'
                   }, {'short': 'div#header + div#footer',
                       'embiggened': '<div id="header">\n\t\n</div>\n<div id="footer">\n\t\n</div>\n'
+                  }, {'short': '#header + #footer',
+                      'embiggened': '<div id="header">\n\t\n</div>\n<div id="footer">\n\t\n</div>\n'
                   }, {'short': 'h1[title]',
                       'embiggened': '<h1 title=""></h1>\n'
                   }, {'short': 'div > span { content } + span { content 2 } < div',

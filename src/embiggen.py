@@ -22,7 +22,7 @@ def build(element_unparsed):
 
     An element is composed of:
 
-    - A Name,
+    - Optionally, a Name; if unspecified, it's `div`,
     - Optionally, a class, preceded by #,
     - Zero or more Classes, preceded and separated by `.`,
     - Zero or more Properties, wrapped in `[]`, and optionally separated
@@ -61,7 +61,7 @@ def build(element_unparsed):
         'meta': {'content': ''},
     }
 
-    result = re.match(r'\s*(\w+)'                     # Name
+    result = re.match(r'\s*(\w*)'                     # Name
                       r'\s*(?:#(\w+))?'               # ID
                       r'((?:\s*\.\w+)*)'              # Classes
                       r'((?:\s*\[[^\]]+\])*)'         # Properties
@@ -70,7 +70,7 @@ def build(element_unparsed):
 
     name, id_, classes, properties, content = result.group(1, 2, 3, 4, 5)
 
-    element = Element(name)
+    element = Element('div' if not name else name)
 
     if id_ is not None:
         element.setAttribute("id", id_)
