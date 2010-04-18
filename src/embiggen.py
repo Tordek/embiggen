@@ -172,8 +172,7 @@ def pretty_print(node, indent, addindent, newline):
     for attribute_name, attribute_value in sorted(node.attributes.items()):
         value += ' %s="%s"'%(attribute_name, attribute_value)
 
-    # It's incredible I need the second test.
-    if node.hasChildNodes and len(node.childNodes) > 0:
+    if node.hasChildNodes():
         value += '>'
 
         if node.tagName not in block_nodes and len(node.childNodes) == 1:
