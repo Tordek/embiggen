@@ -33,22 +33,36 @@ This project is inspired by `Vadim Makeev`_'s `Zen Coding`_ and
 Examples
 --------
 
+``span`` expands to::
+
+    <span></span>
+
 ``div`` expands to::
 
-    <div></div>
+    <div>
+
+    </div>
 
 ``div#header`` expands to::
 
-    <div id="header"></div>
+    <div id="header">
+
+    </div>
 
 ``div#header.align-left`` expands to::
 
-    <div id="header" class="align-left"></div>
+    <div id="header" class="align-left">
+
+    </div>
 
 ``#header + #footer`` expands to::
 
-    <div id="header"></div>
-    <div id="footer"></div>
+    <div id="header">
+
+    </div>
+    <div id="footer">
+
+    </div>
 
 ``a[href=index.html]{Home}`` expands to::
 
