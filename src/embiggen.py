@@ -61,9 +61,9 @@ def build(element_unparsed):
         'meta': {'content': ''},
     }
 
-    result = re.match(r'(\w+)'                        # Name
+    result = re.match(r'\s*(\w+)'                     # Name
                       r'\s*(?:#(\w+))?'               # ID
-                      r'((?:\.\w+)*)'                 # Classes
+                      r'((?:\s*\.\w+)*)'              # Classes
                       r'((?:\s*\[[^\]]+\])*)'         # Properties
                       r'(?:\s*\{(\s*[^\}]+)\s*\})?',  # Content
                       element_unparsed)
@@ -76,7 +76,8 @@ def build(element_unparsed):
         element.setAttribute("id", id_)
 
     if classes is not None and classes != '':
-        element.setAttribute("class", classes.replace('.', ' ').strip())
+        element.setAttribute("class",
+                             ' '.join(re.split(r'\s*\.', classes)[1:]))
 
     if required.has_key(name):
         for property_name, property_value in required[name].iteritems():
@@ -113,8 +114,8 @@ def parse_element(line):
 
     # This could be simplified. We only need to check that the separator isn't
     # inside `[]` or `{}`.
-    result = re.search(r'(\w+(?:#\w+)?(?:\.\w+)*(?:\s*\[[^\]]+\])*(?:\s*\{[^\}]+\})?)'
-                        '(?:\s*(<|\+|>)(.*))?', line)
+    result = re.match(r'((?:\s*(?:[\.#]?\w+|\[[^\]]+\]|\{[^\}]+\}))+)'
+                      r'\s*(?:(<|\+|>)(.*))?', line)
     if result is not None:
         element_unparsed, separator, rest = result.group(1, 2, 3)
 

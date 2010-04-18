@@ -7,11 +7,15 @@ def test_embiggen():
                     'embiggened': '<br/>\n'
                   }, {'short': 'br#id',
                       'embiggened': '<br id="id"/>\n'
+                  }, {'short': 'br #id',
+                      'embiggened': '<br id="id"/>\n'
                   }, {'short': 'br#id.class',
                       'embiggened': '<br class="class" id="id"/>\n'
                   }, {'short': 'br#id.class1.class2',
                       'embiggened': '<br class="class1 class2" id="id"/>\n'
                   }, {'short': 'br.class1.class2',
+                      'embiggened': '<br class="class1 class2"/>\n'
+                  }, {'short': 'br .class1 .class2',
                       'embiggened': '<br class="class1 class2"/>\n'
                   }, {'short': 'div',
                       'embiggened': '<div>\n\t\n</div>\n'
