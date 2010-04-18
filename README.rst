@@ -45,7 +45,7 @@ Examples
 
     <div id="header" class="align-left"></div>
 
-``div#header + div#footer`` expands to::
+``#header + #footer`` expands to::
 
     <div id="header"></div>
     <div id="footer"></div>
@@ -53,3 +53,37 @@ Examples
 ``a[href=index.html]{Home}`` expands to::
 
     <a href="index.html">Home</a>
+
+``#menu > ul`` expands to::
+
+    <div id="menu">
+            <ul>
+
+            </ul>
+    </div>
+
+``#menu > h3 + ul`` expands to::
+
+    <div id="menu">
+            <h3></h3>
+            <ul>
+
+            </ul>
+    </div>
+
+``#header > h1{Welcome to our site}`` expands to::
+
+    <div id="header">
+            <h1>Welcome to our site</h1>
+    </div>
+
+
+``#header > ul > li < p{Footer}`` expands to::
+
+    <div id="header">
+        <ul>
+            <li></li>
+        </ul>
+        <p>Footer</p>
+    </div>
+
