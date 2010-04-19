@@ -170,7 +170,7 @@ def pretty_print(node, indent, addindent, newline, close_tag_guides):
     value = indent + '<' + node.tagName
 
     for attribute_name, attribute_value in sorted(node.attributes.items()):
-        value += ' %s="%s"'%(attribute_name, attribute_value)
+        value += ' %s="%s"' % (attribute_name, attribute_value)
 
     if node.hasChildNodes():
         value += '>'
