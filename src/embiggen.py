@@ -168,7 +168,15 @@ def pretty_print(node, indent, addindent, newline, close_tag_guides):
 
     value = indent + '<' + node.tagName
 
+    if node.attributes.has_key('id'):
+        value += ' id="%s"' % node.attributes['id'].value
+
+    if node.attributes.has_key('class'):
+        value += ' class="%s"' % node.attributes['class'].value
+
     for attribute_name, attribute_value in sorted(node.attributes.items()):
+        if attribute_name in ('id', 'class'):
+            continue
         value += ' %s="%s"' % (attribute_name, attribute_value)
 
     if node.hasChildNodes():

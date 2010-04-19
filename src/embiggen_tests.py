@@ -10,9 +10,9 @@ def test_embiggen():
                   }, {'short': 'br #id',
                       'embiggened': '<br id="id"/>\n'
                   }, {'short': 'br#id.class',
-                      'embiggened': '<br class="class" id="id"/>\n'
+                      'embiggened': '<br id="id" class="class"/>\n'
                   }, {'short': 'br#id.class1.class2',
-                      'embiggened': '<br class="class1 class2" id="id"/>\n'
+                      'embiggened': '<br id="id" class="class1 class2"/>\n'
                   }, {'short': 'br.class1.class2',
                       'embiggened': '<br class="class1 class2"/>\n'
                   }, {'short': 'br .class1 .class2',
