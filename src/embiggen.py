@@ -54,7 +54,6 @@ def build(element_unparsed):
         'form': {'action': '', 'method': 'post'},
         'table': {'cellspacing': '0'},
         'input': {'type': '', 'name': '', 'value': ''},
-        'base': {'href': ''},
         'area': {'shape': '', 'coords': '', 'href': '', 'alt': ''},
         'select': {'name': ''},
         'option': {'value': ''},
