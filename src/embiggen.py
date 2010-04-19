@@ -54,7 +54,6 @@ def build(element_unparsed):
         'form': {'action': '', 'method': 'post'},
         'table': {'cellspacing': '0'},
         'input': {'type': '', 'name': '', 'value': ''},
-        'base': {'href': ''},
         'area': {'shape': '', 'coords': '', 'href': '', 'alt': ''},
         'select': {'name': ''},
         'option': {'value': ''},
@@ -153,7 +152,7 @@ def parse(line):
 
     return root
 
-def pretty_print(node, indent, addindent, newline):
+def pretty_print(node, indent, addindent, newline, close_tag_guides):
     """Pretty-print an XML-tree.
 
     This pretty-printing function values human-readability more than pedantic
@@ -169,47 +168,61 @@ def pretty_print(node, indent, addindent, newline):
 
     value = indent + '<' + node.tagName
 
+    if node.attributes.has_key('id'):
+        value += ' id="%s"' % node.attributes['id'].value
+
+    if node.attributes.has_key('class'):
+        value += ' class="%s"' % node.attributes['class'].value
+
     for attribute_name, attribute_value in sorted(node.attributes.items()):
-        value += ' %s="%s"'%(attribute_name, attribute_value)
+        if attribute_name in ('id', 'class'):
+            continue
+        value += ' %s="%s"' % (attribute_name, attribute_value)
 
     if node.hasChildNodes():
         value += '>'
 
         if node.tagName not in block_nodes and len(node.childNodes) == 1:
-            value += pretty_print(node.childNodes[0], '', '', '')
+            value += pretty_print(node.childNodes[0], '', '', '',
+                                  close_tag_guides)
         else:
             value += newline
 
             for child in node.childNodes:
                 value += pretty_print(child, indent + addindent, addindent,
-                                      newline)
+                                      newline, close_tag_guides)
                 if value[-1] != newline:
                     value += newline
 
             value += indent
 
         value += '</' + node.tagName + '>'
+
+        if close_tag_guides and node.tagName == 'div' and \
+           node.attributes.has_key('id'):
+            value += '<!-- /#%s -->' % node.attributes['id'].value
     else:
         value += '/>'
 
     return value
 
-def decode(tree, indent, newline):
+def decode(tree, indent, newline, close_tag_guides):
     """Takes a parsed tree and generates the HTML.
     """
 
     result = ''
 
     for subtree in tree.childNodes:
-        result += pretty_print(subtree, '', indent, newline) + newline
+        result += pretty_print(subtree, '', indent, newline, close_tag_guides)
+        result += newline
 
     return result
 
-def embiggen(line, indent, newline):
+def embiggen(line, indent, newline, close_tag_guides=False):
     """Takes a line, parses it, and returns the generated HTML as a string.
     """
 
-    return decode(parse(line), indent, newline)
+    return decode(parse(line), indent, newline, close_tag_guides)
 
 def main():
     """Reads from `stdin` and generates the embiggened HTML for each line.
@@ -220,10 +233,13 @@ def main():
     parser.add_option('--indent-string', default='\t',
                       help='the string to prepend at each indentation level',
                       metavar='INDENT_STRING')
+    parser.add_option('--close-tag-guides', default=False, action='store_true',
+                      help='add comments at the end of divs')
     (options, _) = parser.parse_args()
 
     for line in sys.stdin:
-        print embiggen(line, options.indent_string, '\n')
+        print embiggen(line, options.indent_string, '\n',
+                       options.close_tag_guides)
 
 if __name__ == "__main__":
     main()
