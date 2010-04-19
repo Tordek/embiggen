@@ -40,3 +40,7 @@ def test_embiggen():
 
 def check_embiggen(short, embiggened):
     assert_equals(embiggened, embiggen(short, '\t', '\n'))
+
+def test_close_tag_comments():
+    assert_equals('<div id="tagged">\n\t\n</div><!-- /#tagged -->\n',
+                  embiggen('div#tagged', '\t', '\n', True))
