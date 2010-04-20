@@ -33,6 +33,8 @@ def test_embiggen():
                       'embiggened': '<h1 title=""></h1>\n'
                   }, {'short': 'div > span { content } + span { content 2 } < div',
                       'embiggened': '<div>\n\t<span>content</span>\n\t<span>content 2</span>\n</div>\n<div>\n\t\n</div>\n'
+                  }, {'short': 'ul > li * 3',
+                      'embiggened': '<ul>\n\t<li></li>\n\t<li></li>\n\t<li></li>\n</ul>\n'
                   }]
 
     for test_case in test_cases:

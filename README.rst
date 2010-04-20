@@ -55,6 +55,14 @@ Examples
 
     </div>
 
+``ul > li*3`` expands to::
+
+    <ul>
+    	<li></li>
+    	<li></li>
+    	<li></li>
+    </ul>
+
 ``#header + #footer`` expands to::
 
     <div id="header">

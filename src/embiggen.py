@@ -7,7 +7,6 @@ Embiggen is a simple filter program that takes a CSS-like syntax, and
 
 Embiggen is under the 2-clause BSD license. See the COPYING file for details.
 
-TODO: Multipliers.
 TODO: Placeholders.
 TODO: Command line options.
 TODO: Shortcuts.
@@ -16,9 +15,9 @@ TODO: Shortcuts.
 import re
 import sys
 from optparse import OptionParser
-from xml.dom.minidom import Element, Text
+from xml.dom.minidom import Document, Element, Text
 
-def build(element_unparsed):
+def build(element_unparsed, owner):
     """Builds an Element out of its string definition.
 
     An element is composed of:
@@ -65,12 +64,13 @@ def build(element_unparsed):
                       r'\s*(?:#(\w+))?'               # ID
                       r'((?:\s*\.\w+)*)'              # Classes
                       r'((?:\s*\[[^\]]+\])*)'         # Properties
-                      r'(?:\s*\{(\s*[^\}]+)\s*\})?',  # Content
+                      r'(?:\s*\{(\s*[^\}]+)\s*\})?'   # Content
+                      r'(?:\s*\*\s*([0-9]+))?',       # Multiplier
                       element_unparsed)
 
-    name, id_, classes, properties, content = result.group(1, 2, 3, 4, 5)
+    name, id_, classes, properties, content, multiplier = result.groups()
 
-    element = Element('div' if not name else name)
+    element = owner.createElement('div' if not name else name)
 
     if id_ is not None:
         element.setAttribute("id", id_)
@@ -78,6 +78,10 @@ def build(element_unparsed):
     if classes is not None and classes != '':
         element.setAttribute("class",
                              ' '.join(re.split(r'\s*\.', classes)[1:]))
+
+    if multiplier is not None:
+        element.setAttribute("_embiggen_multiplier", multiplier)
+
 
     if required.has_key(name):
         for property_name, property_value in required[name].iteritems():
@@ -100,13 +104,12 @@ def build(element_unparsed):
         content = ''
 
     if content is not None:
-        text = Text()
-        text.data = content.strip()
+        text = owner.createTextNode(content.strip())
         element.appendChild(text)
 
     return element
 
-def parse_element(line):
+def parse_element(line, owner):
     """Parses a single element out of a line.
 
     Returns a triple of (element, separator, rest).
@@ -114,12 +117,28 @@ def parse_element(line):
 
     # This could be simplified. We only need to check that the separator isn't
     # inside `[]` or `{}`.
-    result = re.match(r'((?:\s*(?:[\.#]?\w+|\[[^\]]+\]|\{[^\}]+\}))+)'
+    result = re.match(r'((?:\s*(?:[\.#]?\w+|\[[^\]]+\]|\{[^\}]+\}))+'
+                      r'(?:\s*\*\s*[0-9]+)?)'
                       r'\s*(?:(<|\+|>)(.*))?', line)
     if result is not None:
         element_unparsed, separator, rest = result.group(1, 2, 3)
 
-        return build(element_unparsed), separator, rest
+        return build(element_unparsed, owner), separator, rest
+
+def expand_multipliers(tree):
+    for subtree in tree.childNodes:
+        if isinstance(subtree, Text):
+            continue
+
+        expand_multipliers(subtree)
+
+        if subtree.attributes.has_key('_embiggen_multiplier'):
+            multiply_by = int(subtree.attributes['_embiggen_multiplier'].value)
+            subtree.removeAttribute('_embiggen_multiplier')
+
+            for _ in range(multiply_by - 1):
+                tree.insertBefore(subtree.cloneNode(True), subtree)
+
 
 def parse(line):
     """Parses a line, returning a tree representation of the result.
@@ -127,12 +146,13 @@ def parse(line):
     The root node is a dummy anonymous element.
     """
 
-    root = Element('')
+    document = Document()
+    root = document.createElement('tree')
     current_element = root
     rest = line
 
     while True:
-        element, separator, rest = parse_element(rest)
+        element, separator, rest = parse_element(rest, document)
 
         if isinstance(current_element.lastChild, Text) and \
            current_element.lastChild.data == '':
@@ -149,6 +169,8 @@ def parse(line):
             current_element = current_element
         elif separator == '>':
             current_element = element
+
+    expand_multipliers(root)
 
     return root
 
